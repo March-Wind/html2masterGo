@@ -114,10 +114,10 @@
   resolved "https://registry.npmmirror.com/@hutson/parse-repository-url/-/parse-repository-url-3.0.2.tgz#98c23c950a3d9b6c8f0daed06da6c3af06981340"
   integrity sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==
 
-"@mastergo/plugin-typings@^1.20.0":
-  version "1.20.0"
-  resolved "https://registry.npmjs.org/@mastergo/plugin-typings/-/plugin-typings-1.20.0.tgz#d3c3508c1419f695aeaba98b18ee5773ff724987"
-  integrity sha512-DFwEv5X5AWovdaj+5S2J+CUSbH+nZvg37yo26641iMciHZFHtPZn1lb6AfhKDS4lI8see/TCmwJhz2+KKyBTRg==
+"@mastergo/plugin-typings@^2.4.0":
+  version "2.5.0"
+  resolved "https://registry.npmmirror.com/@mastergo/plugin-typings/-/plugin-typings-2.5.0.tgz#138c57dc3d3d8581ad1daebc940617494fcbbe1b"
+  integrity sha512-Oc8cf/ttLD9blSdHtcInYZDxGGAMEijakbMheu6u4WWbK3Rji6rHQ8tkoXWUOmcIpp+uL+z75txg6+kb3w6LuQ==
 
 "@microsoft/api-extractor-model@7.25.1":
   version "7.25.1"

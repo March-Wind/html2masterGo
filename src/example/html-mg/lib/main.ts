@@ -1,26 +1,27 @@
-import { renderToMasterGo } from '../../../lib/index'
+import { renderToMasterGo } from "../../../lib/index";
 console.clear();
 
 const main = async () => {
   mg.showUI(__html__);
-}
+};
 
 main();
 
 // mg.on的callback不能用async修饰
-mg.on('drop', (evt: DropEvent) => {
-  const { absoluteX, absoluteY, items } = evt 
+mg.on("drop", (evt: DropEvent) => {
+  const { absoluteX, absoluteY, items } = evt;
+  console.log(111, items);
   try {
-    renderToMasterGo(items).then(node => {
+    renderToMasterGo(items).then((node) => {
       setTimeout(() => {
         if (node) {
-          node.x = absoluteX
-          node.y = absoluteY
+          node.x = absoluteX;
+          node.y = absoluteY;
         }
-        console.log('生成成功', node!.x)
+        console.log("生成成功", node!.x);
       }, 100);
-    })
+    });
   } catch (error) {
-    console.error('生成失败', error)
+    console.error("生成失败", error);
   }
-})
+});
