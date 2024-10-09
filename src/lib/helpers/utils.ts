@@ -1,33 +1,37 @@
-import { TargetProps, ExtraNodeType } from "../index.d"
+import { TargetProps, ExtraNodeType } from "../index.d";
 
-const pesudoElts = ['::after', '::before']
+const pesudoElts = ["::after", "::before"];
 
 export type PesudoElt = {
-  type: '::after' | '::before'
-  nodeType: ExtraNodeType.PESUDO,
-  styles: TargetProps
-}
+  type: "::after" | "::before";
+  nodeType: ExtraNodeType.PESUDO;
+  styles: TargetProps;
+};
 
-export type PesudoElts = Array<PesudoElt>
+export type PesudoElts = Array<PesudoElt>;
 
 /**
- * 
+ *
  * 一般来说content都是none, 当content === '""'视为有效的伪元素
  */
 export const getPesudoElts = (element: HTMLElement): PesudoElts[] => {
-  return pesudoElts.map(pesudoType => {
-    const styles = getComputedStyle(element, pesudoType);
-    return styles.content.trim() === '""'? {
-      nodeType: ExtraNodeType.PESUDO,
-      styles: {...styles, isPesudo: true},
-      type: pesudoType
-    } : null
-  }).filter(styles => !!styles) as any
-}
+  return pesudoElts
+    .map((pesudoType) => {
+      const styles = getComputedStyle(element, pesudoType);
+      return styles.content.trim() === '""'
+        ? {
+            nodeType: ExtraNodeType.PESUDO,
+            styles: { ...styles, isPesudo: true },
+            type: pesudoType,
+          }
+        : null;
+    })
+    .filter((styles) => !!styles) as any;
+};
 
 export const isInline = (display: string) => {
-  return display?.includes('inline')
-}
+  return display?.includes("inline");
+};
 
 // 将css的px或%转为数字
 export const getNumber = (px: string) => {
@@ -35,7 +39,7 @@ export const getNumber = (px: string) => {
   const result = parseFloat(px);
   if (isNaN(result)) return 0;
   return result;
-}
+};
 
 /**
  * 转换rgba
@@ -48,24 +52,28 @@ export const transColor = (color: string) => {
     a: 1,
   };
   if (!color) {
-    return result
-  };
-  const rgbaRaw = new RegExp(/rgb\((\s*\d*\.?\d+\s*,\s*\d*\.?\d+\s*,\s*\d*\.?\d+\s*)\)/).exec(color) || new RegExp(/rgba\((\s*\d*\.?\d+\s*,\s*\d*\.?\d+\s*,\s*\d*\.?\d+\s*,\s*\d*\.?\d+\s*)\)/).exec(color);
+    return result;
+  }
+  const rgbaRaw =
+    new RegExp(/rgb\((\s*\d*\.?\d+\s*,\s*\d*\.?\d+\s*,\s*\d*\.?\d+\s*)\)/).exec(color) ||
+    new RegExp(/rgba\((\s*\d*\.?\d+\s*,\s*\d*\.?\d+\s*,\s*\d*\.?\d+\s*,\s*\d*\.?\d+\s*)\)/).exec(color);
   if (!rgbaRaw) return result;
-  const rgba = rgbaRaw[1]?.split(',');
+  const rgba = rgbaRaw[1]?.split(",");
   result.r = parseFloat(rgba[0]) / 255;
   result.g = parseFloat(rgba[1]) / 255;
   result.b = parseFloat(rgba[2]) / 255;
   result.a = parseFloat(rgba[3] ?? 1);
   return result;
-}
+};
 
 /**
  * 根据zIndex排序
  */
-export const sortByZIndex = (nodes: {index: number}[]) => {
-  nodes.sort((a, b) => {return a.index - b.index})
-}
+export const sortByZIndex = (nodes: { index: number }[]) => {
+  nodes.sort((a, b) => {
+    return a.index - b.index;
+  });
+};
 
 /**
  * 判断文本是否折行
@@ -93,87 +101,87 @@ export const isTextWrapped = (range: Range, lineHeight: number) => {
   //   element.setAttribute('style', orgStyle);
   //   return false
   // }
-  const rects = Array.from(range.getClientRects())
+  const rects = Array.from(range.getClientRects());
   // 单行仍会返回多行，未解决，需要判断一下 https://bugs.chromium.org/p/chromium/issues/detail?id=612459
-  const first = rects[0]
+  const first = rects[0];
   if (!first) {
-    return false
+    return false;
   }
   return rects.slice(1).some((rect) => {
     if (rect.y === first.y) {
-      return false
+      return false;
     }
     if (isNaN(lineHeight)) {
-      let temp = document.createElement('div');
+      const temp = document.createElement("div");
       temp.innerText = "字";
-      temp.style.position = 'fixed'
+      temp.style.position = "fixed";
       document.body.appendChild(temp);
-      lineHeight = temp.offsetHeight
+      lineHeight = temp.offsetHeight;
       document.body.removeChild(temp);
     }
     // 因为该行文字包含了一些不同的字体或者字体大小，在不同的字符之间存在微小的空隙或者重叠， 导致存在了不同的rects
-    const delta = Math.abs(Math.abs(rect.y - first.y) - lineHeight)
+    const delta = Math.abs(Math.abs(rect.y - first.y) - lineHeight);
     if (delta >= 0) {
-      return true
+      return true;
     }
-    return false
-  })
-}
+    return false;
+  });
+};
 
 /**
  * 是否是svg
  */
 export const isSvg = (element: Element) => {
-  return element.tagName === 'svg'
-}
+  return element.tagName === "svg";
+};
 
 /**
  * 是否是input
  */
 export const isInput = (element: Element): boolean => {
-  return element instanceof HTMLInputElement || element.tagName === 'INPUT'
-}
+  return element instanceof HTMLInputElement || element.tagName === "INPUT";
+};
 
 /**
  * 是否是textArea
  */
 export const isTextArea = (element: Element): boolean => {
-  return element instanceof HTMLTextAreaElement || element.tagName === 'TEXTAREA'
-}
+  return element instanceof HTMLTextAreaElement || element.tagName === "TEXTAREA";
+};
 
 /**
  * 清除动画和变换
  */
 export const clearTransformAndTransition = async (styles: TargetProps, element: HTMLElement) => {
-  let transition = element.style.transition
-  let transform = element.style.transform
-  if (styles.transform !== 'none') {
-    element.style.transform = 'unset'
-    element.style.transition = 'unset'
+  const transition = element.style.transition;
+  const transform = element.style.transform;
+  if (styles.transform !== "none") {
+    element.style.transform = "unset";
+    element.style.transition = "unset";
 
     // 等待元素transform还原
     await new Promise((resolve) => {
       setTimeout(() => {
-        resolve(1)
+        resolve(1);
       }, 50);
     });
   }
 
   return () => {
-    if (styles.transform !== 'none') {
-      element.style.transform = transform
-      element.style.transition = transition
+    if (styles.transform !== "none") {
+      element.style.transform = transform;
+      element.style.transition = transition;
     }
-  }
-}
+  };
+};
 
 /**
  * 判断矩阵是否包含翻转
  */
 export function isFliped(transform: Transform): boolean {
   // 定义基准向量，比如 [1, 0] 和 [0, 1]
-  const horizontal = {x: 1, y: 0}; // 水平向右的向量
-  const vertical = {x: 0, y: 1}; // 垂直向上的向量
+  const horizontal = { x: 1, y: 0 }; // 水平向右的向量
+  const vertical = { x: 0, y: 1 }; // 垂直向上的向量
   const rotationTransform: Transform = [
     [transform[0][0], transform[0][1], 0],
     [transform[1][0], transform[1][1], 0],
@@ -190,18 +198,18 @@ export function isFliped(transform: Transform): boolean {
 export const convertVector = (vector: Vector, transform: Transform): Vector => {
   const originCenterMatrix = [[vector.x], [vector.y], [1]];
   const transformMatrix = [...transform, [0, 0, 1]];
-  const matrix = matrixProduct(transformMatrix, originCenterMatrix)
+  const matrix = matrixProduct(transformMatrix, originCenterMatrix);
   const center = {
     x: matrix[0][0],
-    y: matrix[1][0]
-  }
+    y: matrix[1][0],
+  };
   return center;
-}
+};
 // 矩阵点乘
 export const matrixProduct = (vector1: number[][], vector2: number[][]): number[][] => {
   const result: number[][] = [];
 
-  if(vector1.length === vector2[0].length || vector1[0].length === vector2.length){
+  if (vector1.length === vector2[0].length || vector1[0].length === vector2.length) {
     for (let i = 0; i < vector1.length; i++) {
       result[i] = [];
       for (let j = 0; j < vector2[0].length; j++) {
@@ -212,9 +220,33 @@ export const matrixProduct = (vector1: number[][], vector2: number[][]): number[
         result[i][j] = sum;
       }
     }
-  }
-  else {
-    throw new Error(`vector matrix product error with vectors: , ${JSON.stringify(vector1)}, ${JSON.stringify(vector2)}`);
+  } else {
+    throw new Error(
+      `vector matrix product error with vectors: , ${JSON.stringify(vector1)}, ${JSON.stringify(vector2)}`
+    );
   }
   return result;
-}
+};
+
+export const adjustTextNodeHeight = (range: Range, styles: TargetProps) => {
+  const lineHeight = getNumber(styles.lineHeight) || getNumber(styles.fontSize);
+
+  const rects = Array.from(range.getClientRects());
+  const rect = rects[0];
+
+  if (lineHeight && lineHeight !== rect.height) {
+    // 需要纠正高度
+    const _rect = range.getBoundingClientRect();
+    const height = rects.length * lineHeight;
+    const _top = _rect.top + (_rect.height - height) / 2;
+    const clonedRect = new DOMRect(_rect.x, _top, _rect.width, height);
+    const __rect = {
+      ...rect,
+      height,
+      top: _top,
+      bottom: _top + height,
+      y: _top,
+    };
+    return clonedRect;
+  }
+};
